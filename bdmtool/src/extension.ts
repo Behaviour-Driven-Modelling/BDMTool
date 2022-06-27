@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 
 import * as vscode from 'vscode';
+import { BDMTestProvider } from './BDMTestProvider';
 import { DependencyFetcher } from './DependencyFetcher';
 import { TerminalManager } from './TerminalManager';
 import { UserInputManager } from './UserInputManager';
@@ -12,7 +13,11 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	
+	const rootPath =
+  vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
+    ? vscode.workspace.workspaceFolders[0].uri.fsPath
+    : undefined;
+	const localBDMTestProvider = new BDMTestProvider(rootPath);
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
@@ -34,11 +39,16 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposableTest = vscode.commands.registerCommand('bdm.test', async () => {
 		let terminalManager = new TerminalManager();
 		terminalManager.runTests();
-		
+		localBDMTestProvider.refresh();
 	});
 
 	context.subscriptions.push(disposableInstall);
 	context.subscriptions.push(disposableTest);
+	
+	vscode.window.registerTreeDataProvider(
+		'BDMTestView',
+		localBDMTestProvider
+	  );
 }
 
 // this method is called when your extension is deactivated

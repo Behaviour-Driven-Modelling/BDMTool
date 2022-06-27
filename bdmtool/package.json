@@ -16,10 +16,42 @@
 	"activationEvents": [
 		"onLanguage:vdmpp",
 		"onCommand:bdm.createProject",
-		"onCommand:bdm.test"
+		"onCommand:bdm.test",
+		"onView:BDMTestView"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"submenus": [
+			{
+				"id": "bdm.commandsubmenu",
+				"label": "BDM"
+			}
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "bdm.test",
+        			"when": "view == BDMTestView"
+					
+				}
+			],
+			"bdm.commandsubmenu": [
+				{
+					"command": "bdm.createProject"
+				},
+				{
+					"command": "bdm.test"
+				}
+			],
+			"explorer/context": [
+				{
+					"command": "bdm.createProject"
+				},
+				{
+					"command": "bdm.test"
+				}
+			]
+		},
 		"commands": [
 			{
 				"command": "bdm.createProject",
@@ -27,9 +59,36 @@
 			},
 			{
 				"command": "bdm.test",
-				"title": "Run BDM tests"
+				"title": "Run BDM tests",
+				"icon": {
+					"light": "resources/icons/media-play-svgrepo-com.svg",
+					"dark": "resources/icons/media-play-svgrepo-com.svg"
+				}
 			}
-		]
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "BDMTest",
+					"title": "BDM Testing",
+					"icon": "resources/icons/vsCodeIcon.svg"
+				}
+			]
+		},
+		"views": {
+			"BDMTest": [
+				{
+					"id": "BDMTestView",
+					"name": "BDM Test View"
+				}
+			]
+		},
+		"viewsWelcome": [
+            {
+                "view": "BDMTestView",
+                "contents": "Open a BDM project and run test from this view.\n[Run test](command:bdm.test)"
+            }
+        ]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
