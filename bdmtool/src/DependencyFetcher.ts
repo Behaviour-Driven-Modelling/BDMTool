@@ -55,6 +55,12 @@ export class DependencyFetcher {
      async install(filePaths: string[], artifactId: string) {
         let NEXT_TERM_ID = 1;
         filePaths.forEach(localpath => {
+            let artifactFinalId = artifactId;
+            if(artifactId = 'archetype') {
+                if (localpath.includes('archetype-example')) {
+                    artifactFinalId = 'archetype-example';
+                }
+            }
             let groupId = "com.bdm";
             if (artifactId === "vdmj") {
                 groupId = "com.fujitsu";
@@ -63,7 +69,7 @@ export class DependencyFetcher {
             const version = this.extractVersion(localpath);
             const filePath = vscode.Uri.file(localpath).fsPath;
             //const filePathPom = vscode.Uri.file(context.asAbsolutePath(path.join('resources','jars',"archetype", 'pom.xml'))).fsPath;
-            const command = `mvn install:install-file \ -Dfile="${filePath}" \ -DgroupId="${groupId}" \ -DartifactId="${artifactId}" \ -Dversion="${version}" \ -Dpackaging=jar`;
+            const command = `mvn install:install-file \ -Dfile="${filePath}" \ -DgroupId="${groupId}" \ -DartifactId="${artifactFinalId}" \ -Dversion="${version}" \ -Dpackaging=jar`;
             terminal.sendText(command);
             
             

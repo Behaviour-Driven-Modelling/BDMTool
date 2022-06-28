@@ -2,7 +2,7 @@
 	"name": "bdmtool",
 	"displayName": "BDMTool",
 	"description": "BDM tool for applying BDM in VDM++",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"engines": {
 		"vscode": "^1.67.0"
 	},
@@ -16,8 +16,12 @@
 	"activationEvents": [
 		"onLanguage:vdmpp",
 		"onCommand:bdm.createProject",
+		"onCommand:bdm.createProjectExample",
 		"onCommand:bdm.test",
-		"onView:BDMTestView"
+		"onCommand:bdm.testSpecification",
+		"onCommand:bdm.testImplementation",
+		"onView:BDMTestViewSpecification",
+		"onCommand:htmlreport.open"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -31,16 +35,76 @@
 			"view/title": [
 				{
 					"command": "bdm.test",
-        			"when": "view == BDMTestView"
+					"when": "view == BDMTestView",
+					"group": "navigation"
+					
+				},
+				{
+					"command": "bdm.testSpecification",
+					"when": "view == BDMTestViewSpecification",
+					"group": "navigation"
+					
+				},
+				{
+					"command": "bdm.testImplementation",
+					"when": "view == BDMTestViewImplementation",
+					"group": "navigation"
+					
+				},
+				{
+					"command": "bdm.htmlreport.openSpecification",
+					"when": "view == BDMTestViewSpecification",
+					"group": "navigation"
+					
+				},
+				{
+					"command": "bdm.htmlreport.openImplementation",
+					"when": "view == BDMTestViewImplementation",
+					"group": "navigation"
+					
+				},
+				{
+					"command": "bdm.test",
+					"when": "view == BDMTestView"
+					
+				},
+				{
+					"command": "bdm.testSpecification",
+					"when": "view == BDMTestViewSpecification"
+					
+				},
+				{
+					"command": "bdm.testImplementation",
+					"when": "view == BDMTestViewImplementation"
+					
+				},
+				{
+					"command": "bdm.htmlreport.openSpecification",
+					"when": "view == BDMTestViewSpecification"
+					
+				},
+				{
+					"command": "bdm.htmlreport.openImplementation",
+					"when": "view == BDMTestViewImplementation"
 					
 				}
+			
 			],
 			"bdm.commandsubmenu": [
 				{
 					"command": "bdm.createProject"
 				},
 				{
+					"command": "bdm.createProjectExample"
+				},
+				{
 					"command": "bdm.test"
+				},
+				{
+					"command": "bdm.testSpecification"
+				},
+				{
+					"command": "bdm.testImplementation"
 				}
 			],
 			"explorer/context": [
@@ -48,7 +112,16 @@
 					"command": "bdm.createProject"
 				},
 				{
+					"command": "bdm.createProjectExample"
+				},
+				{
 					"command": "bdm.test"
+				},
+				{
+					"command": "bdm.testSpecification"
+				},
+				{
+					"command": "bdm.testImplementation"
 				}
 			]
 		},
@@ -58,11 +131,47 @@
 				"title": "Create new BDM project"
 			},
 			{
+				"command": "bdm.createProjectExample",
+				"title": "Create new BDM Example project"
+			},
+			{
 				"command": "bdm.test",
 				"title": "Run BDM tests",
 				"icon": {
-					"light": "resources/icons/media-play-svgrepo-com.svg",
-					"dark": "resources/icons/media-play-svgrepo-com.svg"
+					"light": "resources/icons/play-svgrepo-com_dark.svg",
+					"dark": "resources/icons/play-svgrepo-com_white.svg"
+				}
+			},
+			{
+				"command": "bdm.htmlreport.openSpecification",
+				"title": "HTML report for specification",
+				"icon": {
+					"light": "resources/icons/report-svgrepo-com_dark.svg",
+					"dark": "resources/icons/report-svgrepo-com_white.svg"
+				}
+			},
+			{
+				"command": "bdm.htmlreport.openImplementation",
+				"title": "HTML report for implementation",
+				"icon": {
+					"light": "resources/icons/report-svgrepo-com_dark.svg",
+					"dark": "resources/icons/report-svgrepo-com_white.svg"
+				}
+			},
+			{
+				"command": "bdm.testSpecification",
+				"title": "Run BDM tests on specification",
+				"icon": {
+					"light": "resources/icons/play-svgrepo-com_dark.svg",
+					"dark": "resources/icons/play-svgrepo-com_white.svg"
+				}
+			},
+			{
+				"command": "bdm.testImplementation",
+				"title": "Run BDM tests on implementation",
+				"icon": {
+					"light": "resources/icons/play-svgrepo-com_dark.svg",
+					"dark": "resources/icons/play-svgrepo-com_white.svg"
 				}
 			}
 		],
@@ -79,14 +188,31 @@
 			"BDMTest": [
 				{
 					"id": "BDMTestView",
-					"name": "BDM Test View"
+					"name": "BDM Test"
+				},
+				{
+					"id": "BDMTestViewSpecification",
+					"name": "BDM Test View Specification"
+				},
+				{
+					"id": "BDMTestViewImplementation",
+					"name": "BDM Test View Implementation"
 				}
 			]
+			
 		},
 		"viewsWelcome": [
-            {
+			{
                 "view": "BDMTestView",
-                "contents": "Open a BDM project and run test from this view.\n[Run test](command:bdm.test)"
+                "contents": "Open a BDM project and run test from this view. This button runs tests on both specification and implementation:\n[Run test](command:bdm.test)\nThe views below can be used to run tests on specification and implementation individually:"
+            },
+            {
+                "view": "BDMTestViewSpecification",
+                "contents": "Open a BDM project and run test on specification.\n[Run test Specification](command:bdm.testSpecification)"
+            },
+			{
+                "view": "BDMTestViewImplementation",
+                "contents": "Open a BDM project and run test on implementation.\n[Run test Implementation](command:bdm.testImplementation)"
             }
         ]
 	},

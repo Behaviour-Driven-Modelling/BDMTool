@@ -5,7 +5,7 @@ import { BDMTestItem } from './BDMTestItem';
 
 
 export class BDMTestProvider implements vscode.TreeDataProvider<BDMTestItem> {
-  constructor(private workspaceRoot?: string) {}
+  constructor(private specification: boolean, private workspaceRoot?: string) {}
 
   private _onDidChangeTreeData: vscode.EventEmitter<BDMTestItem | undefined | null | void> = new vscode.EventEmitter<BDMTestItem | undefined | null | void>();
   readonly onDidChangeTreeData: vscode.Event<BDMTestItem | undefined | null | void> = this._onDidChangeTreeData.event;
@@ -15,79 +15,136 @@ export class BDMTestProvider implements vscode.TreeDataProvider<BDMTestItem> {
   }
 
   getTreeItem(element: BDMTestItem): vscode.TreeItem {
+    
     return element;
   }
 
   getChildren(element?: BDMTestItem): Thenable<BDMTestItem[]> {
+    console.log(element);
     if (!this.workspaceRoot) {
       vscode.window.showInformationMessage('No tests in empty workspace');
       return Promise.resolve([]);
     }
-
-
-    if (element) {
+    let packageJsonPath = '';
+    if(this.specification) {
+      packageJsonPath = path.join(this.workspaceRoot, 'target', 'cucumber-reports', 'reportSpecification.json');
+    } else {
+      packageJsonPath = path.join(this.workspaceRoot, 'target', 'cucumber-reports', 'reportImplementation.json');
+    }
+    
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+    if(element?.label === "scenario") {
+      console.log(element.label);
       return Promise.resolve(
-        this.getTestsInPackageJson(
+        this.getSteps(packageJson,element.id)
+      );
+    } else if (element) {
+      // 1.st - children
+      return Promise.resolve(
+        this.getFirstChildren(packageJson)
+        /* this.getTestsInPackageJson(
           path.join(this.workspaceRoot, 'target', 'cucumber-reports', 'reports.json')
-        )
+        ) */
       );
     } else {
-      const packageJsonPath = path.join(this.workspaceRoot, 'target', 'cucumber-reports', 'reports.json');
+      // Absolute parent
+      //const packageJsonPath = path.join(this.workspaceRoot, 'target', 'cucumber-reports', 'reports.json');
       if (this.pathExists(packageJsonPath)) {
-        return Promise.resolve(this.getTestsInPackageJson(packageJsonPath));
+        return Promise.resolve(this.getParentItems(packageJson));
       } else {
-        vscode.window.showInformationMessage('Workspace has no reports.json');
+        vscode.window.showInformationMessage('Workspace has no reports');
         return Promise.resolve([]);
       }
     }
   }
-  //TODO: refactor for correct data
-  /**
-   * Given the path to test.json, read all its features, scenarios and examples.
-   */
-  private getTestsInPackageJson(packageJsonPath: string): BDMTestItem[] {
-    if (this.pathExists(packageJsonPath)) {
-      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
-      const toDep = (moduleName: string, version: string, status: string): BDMTestItem => {
-        console.log(moduleName);
-        if (moduleName === 'Feature') {
-            return new BDMTestItem(
-                "",
-                moduleName,
-                version,
-                vscode.TreeItemCollapsibleState.Collapsed
-              );
-        } else if (moduleName === 'scenario') {
-            return new BDMTestItem(
-                status,
-                moduleName,
-                version,
-                vscode.TreeItemCollapsibleState.Collapsed
-              );
-        } else {
-          return new BDMTestItem(status, moduleName, version, vscode.TreeItemCollapsibleState.None);
-        }
-      };
-      let features: BDMTestItem[] = [];
-      let scenarios: BDMTestItem[] = [];
-      let steps: BDMTestItem[] = [];
-      packageJson.forEach((element: any) => {
-        // incorrect looping
-        features = element ? features.concat([toDep(element.keyword,element.name,"")]) : [];
-        //features = element ? Object.keys(element).map((dep,idx) => toDep(element.keyword,dep,"")) : [];
-        element.elements.forEach((inner: any) => {
-            
-        scenarios = inner ? scenarios.concat([toDep(inner.type,inner.name,inner.before[0].result.status)]) : [];
-        inner.steps.forEach((stepsi: any) => {
-            steps = stepsi ? steps.concat([toDep(stepsi.keyword,stepsi.name,stepsi.result.status)]) : [];
+
+  private getSteps(parentObject: [], id: string) {
+    console.log(id);
+    let steps: BDMTestItem [] = [];
+    const toBDMItem = (moduleName: string, version: string, status: string, id: string, name: string, keyword: string): BDMTestItem => {
+        return new BDMTestItem(status, moduleName, version, vscode.TreeItemCollapsibleState.None,id,name,keyword);
+    }
+    parentObject.forEach((feature: any) => {
+        feature.elements.forEach((scenario: any) => {
+          console.log(scenario.id);
+            if(scenario.id === id) {
+              scenario.steps.forEach((step: any) => {
+                 steps.push(toBDMItem(step.keyword, step.name,step.result.status,step.id,step.name,step.keyword ))
+              });
+            }
         });
+    });
+    console.log(steps);
+    return steps;
+  }
+  private getParentItems(parentObject: BDMTestItem[]) {
+    let features: BDMTestItem[] = [];
+    const toBDMItem = (moduleName: string, version: string, status: string, id: string, name: string, keyword: string): BDMTestItem => {
+      return new BDMTestItem(
+          status,
+          moduleName,
+          version,
+          vscode.TreeItemCollapsibleState.Collapsed,
+          id,
+          name,
+          keyword
+      );
+    };
+
+    parentObject.forEach((feature: any) => {
+        let status = 'passed';
+        feature.elements.forEach((scenario:any) => {
+          scenario.steps.forEach((step:any) => {
+            if (step.result.status !== 'passed') {
+              if (step.result.status === 'undefined' || step.result.status === 'failed') {
+                status = step.result.status;
+              } else if(status !== "undefined" && status !== 'failed') {
+                    if (status !== 'pending') {
+                      status = step.result.status;
+                    }  
+                } 
+            }
+        });
+        });
+        features.push(toBDMItem(feature.keyword,feature.name,status, feature.id, feature.name, feature.keyword));
+    });
+
+    return features;
+  }
+  private getFirstChildren(parentObject: []) {
+    const toBDMItem = (moduleName: string, version: string, status: string, id: string, name: string, keyword: string): BDMTestItem => {
+          return new BDMTestItem(
+            status,
+            moduleName,
+            version,
+            vscode.TreeItemCollapsibleState.Collapsed,
+            id,
+            name,
+            keyword
+          );
+      };
+
+    let scenarios: BDMTestItem[] = [];
+    parentObject.forEach((feature: any) => {
+      feature.elements.forEach((scenario: any) => {
+          let status = 'passed';
+          scenario.steps.forEach((step:any) => {
+            if (step.result.status !== 'passed') {
+              if (step.result.status === 'undefined' || step.result.status === 'failed') {
+                status = step.result.status;
+              } else if(status !== "undefined" && status !== 'failed') {
+                    if (status !== 'pending') {
+                      status = step.result.status;
+                    }  
+                } 
+            }
+                
+          });
+          scenarios.push(toBDMItem(scenario.type,scenario.name,status,scenario.id,scenario.name,scenario.keyword));
         });
       });
-      console.log(features);
-      return features !== undefined ? features.concat(scenarios, steps) : [];
-    } else {
-      return [];
-    }
+   
+    return scenarios;
   }
 
   private pathExists(p: string): boolean {

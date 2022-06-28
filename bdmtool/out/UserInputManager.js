@@ -4,7 +4,10 @@ exports.UserInputManager = void 0;
 const vscode = require("vscode");
 const TerminalManager_1 = require("./TerminalManager");
 class UserInputManager {
-    async createBDMProjectUI() {
+    constructor(workspaceRoot) {
+        this.workspaceRoot = workspaceRoot;
+    }
+    async createBDMProjectUI(example) {
         let selectedText = '';
         const groupIdQuery = await vscode.window.showInputBox({
             placeHolder: "Group ID",
@@ -33,8 +36,8 @@ class UserInputManager {
             vscode.window.showInformationMessage("The desired artifact id for the project: " + projectIdQuery);
         }
         if (groupIdQuery !== undefined && projectIdQuery !== undefined) {
-            let terminalManager = new TerminalManager_1.TerminalManager();
-            await terminalManager.createBDMProjectTerminal(groupIdQuery, projectIdQuery);
+            let terminalManager = new TerminalManager_1.TerminalManager(this.workspaceRoot);
+            await terminalManager.createBDMProjectTerminal(groupIdQuery, projectIdQuery, example);
         }
     }
 }
