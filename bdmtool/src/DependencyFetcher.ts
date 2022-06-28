@@ -82,8 +82,8 @@ export class DependencyFetcher {
 		 
      }
 
-     async updateUserSettings (ppath: string)  {
-          await vscode.workspace
+     updateUserSettings (ppath: string)  {
+          vscode.workspace
             .getConfiguration()
             .update("vdm-vscode.server.classPathAdditions", [vscode.Uri.file(ppath).fsPath], vscode.ConfigurationTarget.Global);
       };
@@ -94,7 +94,7 @@ export class DependencyFetcher {
          if (version) {
             return version[0];
          } else {
-            return "1.1.0";
+            return "1.2.0";
          }
          
      }
