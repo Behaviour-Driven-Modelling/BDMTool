@@ -49,6 +49,7 @@ export class BDMTestProvider implements vscode.TreeDataProvider<BDMTestItem> {
     if (this.pathExists(packageJsonPath)) {
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
       const toDep = (moduleName: string, version: string, status: string): BDMTestItem => {
+        console.log(moduleName);
         if (moduleName === 'Feature') {
             return new BDMTestItem(
                 "",
@@ -56,7 +57,7 @@ export class BDMTestProvider implements vscode.TreeDataProvider<BDMTestItem> {
                 version,
                 vscode.TreeItemCollapsibleState.Collapsed
               );
-        } else if (moduleName === 'Scenario') {
+        } else if (moduleName === 'scenario') {
             return new BDMTestItem(
                 status,
                 moduleName,
@@ -72,14 +73,12 @@ export class BDMTestProvider implements vscode.TreeDataProvider<BDMTestItem> {
       let steps: BDMTestItem[] = [];
       packageJson.forEach((element: any) => {
         // incorrect looping
-        console.log(element);
         features = element ? features.concat([toDep(element.keyword,element.name,"")]) : [];
         //features = element ? Object.keys(element).map((dep,idx) => toDep(element.keyword,dep,"")) : [];
         element.elements.forEach((inner: any) => {
             
         scenarios = inner ? scenarios.concat([toDep(inner.type,inner.name,inner.before[0].result.status)]) : [];
         inner.steps.forEach((stepsi: any) => {
-            console.log(stepsi);
             steps = stepsi ? steps.concat([toDep(stepsi.keyword,stepsi.name,stepsi.result.status)]) : [];
         });
         });

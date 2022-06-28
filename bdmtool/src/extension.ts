@@ -24,13 +24,16 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposableInstall = vscode.commands.registerCommand('bdm.createProject', async () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
+		let dependencyFetcherVDMJ = new DependencyFetcher("resources","nickbattle","vdmj",false,false);
+		await dependencyFetcherVDMJ.downloadAndInstall("vdmj");
+
 		vscode.window.showInformationMessage("BDMTool is installing dependencies...");
 		let dependencyFetcherArchetype = new DependencyFetcher("resources","mactanex","BDMArchetype",false,false);
 		await dependencyFetcherArchetype.downloadAndInstall("archetype");
 
 		let dependencyFetcherCore = new DependencyFetcher("resources","mactanex","BDMCore",false,false);
 		await dependencyFetcherCore.downloadAndInstall("core");
-		vscode.window.showInformationMessage("Dependencies installed successfully");
+		//vscode.window.showInformationMessage("Dependencies installed successfully");
 
 		let userInputManager = new UserInputManager();
 		await userInputManager.createBDMProjectUI();
