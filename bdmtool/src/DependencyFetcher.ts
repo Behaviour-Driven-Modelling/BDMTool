@@ -76,7 +76,7 @@ export class DependencyFetcher {
 
             if(artifactId==="core") {
                        
-                this.updateUserSettings(localpath);
+                this.updateUserSettings(filePath);
             }
         });
 		 
