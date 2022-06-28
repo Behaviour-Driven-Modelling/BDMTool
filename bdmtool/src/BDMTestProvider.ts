@@ -31,31 +31,35 @@ export class BDMTestProvider implements vscode.TreeDataProvider<BDMTestItem> {
     } else {
       packageJsonPath = path.join(this.workspaceRoot, 'target', 'cucumber-reports', 'reportImplementation.json');
     }
-    
-    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
-    if(element?.label === "scenario") {
-      console.log(element.label);
-      return Promise.resolve(
-        this.getSteps(packageJson,element.id)
-      );
-    } else if (element) {
-      // 1.st - children
-      return Promise.resolve(
-        this.getFirstChildren(packageJson)
-        /* this.getTestsInPackageJson(
-          path.join(this.workspaceRoot, 'target', 'cucumber-reports', 'reports.json')
-        ) */
-      );
-    } else {
-      // Absolute parent
-      //const packageJsonPath = path.join(this.workspaceRoot, 'target', 'cucumber-reports', 'reports.json');
-      if (this.pathExists(packageJsonPath)) {
-        return Promise.resolve(this.getParentItems(packageJson));
+    if(fs.existsSync(packageJsonPath)) {
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+      if(element?.label === "scenario") {
+        console.log(element.label);
+        return Promise.resolve(
+          this.getSteps(packageJson,element.id)
+        );
+      } else if (element) {
+        // 1.st - children
+        return Promise.resolve(
+          this.getFirstChildren(packageJson)
+          /* this.getTestsInPackageJson(
+            path.join(this.workspaceRoot, 'target', 'cucumber-reports', 'reports.json')
+          ) */
+        );
       } else {
-        vscode.window.showInformationMessage('Workspace has no reports');
-        return Promise.resolve([]);
+        // Absolute parent
+        //const packageJsonPath = path.join(this.workspaceRoot, 'target', 'cucumber-reports', 'reports.json');
+        if (this.pathExists(packageJsonPath)) {
+          return Promise.resolve(this.getParentItems(packageJson));
+        } else {
+          vscode.window.showInformationMessage('Workspace has no reports');
+          return Promise.resolve([]);
+        }
       }
+    } else {
+      return Promise.resolve([]);
     }
+
   }
 
   private getSteps(parentObject: [], id: string) {
@@ -63,13 +67,13 @@ export class BDMTestProvider implements vscode.TreeDataProvider<BDMTestItem> {
     let steps: BDMTestItem [] = [];
     const toBDMItem = (moduleName: string, version: string, status: string, id: string, name: string, keyword: string): BDMTestItem => {
         return new BDMTestItem(status, moduleName, version, vscode.TreeItemCollapsibleState.None,id,name,keyword);
-    }
+    };
     parentObject.forEach((feature: any) => {
         feature.elements.forEach((scenario: any) => {
           console.log(scenario.id);
             if(scenario.id === id) {
               scenario.steps.forEach((step: any) => {
-                 steps.push(toBDMItem(step.keyword, step.name,step.result.status,step.id,step.name,step.keyword ))
+                 steps.push(toBDMItem(step.keyword, step.name,step.result.status,step.id,step.name,step.keyword ));
               });
             }
         });

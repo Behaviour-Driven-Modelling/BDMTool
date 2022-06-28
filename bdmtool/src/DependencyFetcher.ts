@@ -43,7 +43,7 @@ export class DependencyFetcher {
     }
 
     async downloadAndInstall(artifactId: string) {
-        if (artifactId != "vdmj") {
+        if (artifactId !== "vdmj") {
             downloadRelease(this.user,this.repo,this.resourcesDirectory,this.filterRelease, this.filterAsset, this.leaveZipped, this.disableLogging).then((te) => this.install(te,artifactId)).catch(err => console.log(err.message));
         } else {
             downloadRelease(this.user,this.repo,this.resourcesDirectory,this.filterRelease, this.filterVDMJAsset, this.leaveZipped, this.disableLogging).then((te) => this.install(te,artifactId)).catch(err => console.log(err.message));

@@ -30,7 +30,7 @@ class DependencyFetcher {
         let filepaths = (0, fetch_github_release_1.downloadRelease)(this.user, this.repo, this.resourcesDirectory, this.filterRelease, this.filterAsset, this.leaveZipped, this.disableLogging).then((te) => console.log("All dependencies downloaded successfully: " + te)).catch(err => console.log(err.message));
     }
     async downloadAndInstall(artifactId) {
-        if (artifactId != "vdmj") {
+        if (artifactId !== "vdmj") {
             (0, fetch_github_release_1.downloadRelease)(this.user, this.repo, this.resourcesDirectory, this.filterRelease, this.filterAsset, this.leaveZipped, this.disableLogging).then((te) => this.install(te, artifactId)).catch(err => console.log(err.message));
         }
         else {

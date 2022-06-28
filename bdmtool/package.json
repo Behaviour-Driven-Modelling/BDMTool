@@ -20,17 +20,10 @@
 		"onCommand:bdm.test",
 		"onCommand:bdm.testSpecification",
 		"onCommand:bdm.testImplementation",
-		"onView:BDMTestViewSpecification",
-		"onCommand:htmlreport.open"
+		"onView:BDMTestViewSpecification"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"submenus": [
-			{
-				"id": "bdm.commandsubmenu",
-				"label": "BDM"
-			}
-		],
 		"menus": {
 			"view/title": [
 				{
@@ -89,23 +82,6 @@
 					
 				}
 			
-			],
-			"bdm.commandsubmenu": [
-				{
-					"command": "bdm.createProject"
-				},
-				{
-					"command": "bdm.createProjectExample"
-				},
-				{
-					"command": "bdm.test"
-				},
-				{
-					"command": "bdm.testSpecification"
-				},
-				{
-					"command": "bdm.testImplementation"
-				}
 			],
 			"explorer/context": [
 				{
