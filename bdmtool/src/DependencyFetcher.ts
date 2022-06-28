@@ -22,11 +22,19 @@ export class DependencyFetcher {
         return release.prerelease === false;
     }
 
+    filterVDMJAsset(release: GithubReleaseAsset) {
+        // Filter out prereleases.
+        return release.name.includes("vdmj") && !release.name.includes("vdmjunit") && !release.name.includes("P");
+    }
+
     // Define a function to filter assets.
     filterAsset(asset:GithubReleaseAsset) {
         // Select all assets
+        
         return true;
     }
+
+
 
     downloadDependency(): void {
        let filepaths = downloadRelease(this.user,this.repo,this.resourcesDirectory,this.filterRelease, this.filterAsset, this.leaveZipped, this.disableLogging).then((te) => 
@@ -35,19 +43,30 @@ export class DependencyFetcher {
     }
 
     async downloadAndInstall(artifactId: string) {
-        downloadRelease(this.user,this.repo,this.resourcesDirectory,this.filterRelease, this.filterAsset, this.leaveZipped, this.disableLogging).then((te) => this.install(te,artifactId)).catch(err => console.log(err.message));
-         
+        if (artifactId != "vdmj") {
+            downloadRelease(this.user,this.repo,this.resourcesDirectory,this.filterRelease, this.filterAsset, this.leaveZipped, this.disableLogging).then((te) => this.install(te,artifactId)).catch(err => console.log(err.message));
+        } else {
+            downloadRelease(this.user,this.repo,this.resourcesDirectory,this.filterRelease, this.filterVDMJAsset, this.leaveZipped, this.disableLogging).then((te) => this.install(te,artifactId)).catch(err => console.log(err.message));
+
+        }
+                 
      }
 
      async install(filePaths: string[], artifactId: string) {
         let NEXT_TERM_ID = 1;
         filePaths.forEach(localpath => {
+            let groupId = "com.bdm";
+            if (artifactId === "vdmj") {
+                groupId = "com.fujitsu";
+            }
             const terminal = vscode.window.createTerminal(`BDM Terminal #${NEXT_TERM_ID++}`);
             const version = this.extractVersion(localpath);
             const filePath = vscode.Uri.file(localpath).fsPath;
             //const filePathPom = vscode.Uri.file(context.asAbsolutePath(path.join('resources','jars',"archetype", 'pom.xml'))).fsPath;
-            const command = `mvn install:install-file \ -Dfile="${filePath}" \ -DgroupId="com.bdm" \ -DartifactId="${artifactId}" \ -Dversion="${version}" \ -Dpackaging=jar`;
+            const command = `mvn install:install-file \ -Dfile="${filePath}" \ -DgroupId="${groupId}" \ -DartifactId="${artifactId}" \ -Dversion="${version}" \ -Dpackaging=jar`;
             terminal.sendText(command);
+            
+            
 
             if(artifactId==="core") {
                        
