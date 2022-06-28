@@ -56,7 +56,7 @@ export class DependencyFetcher {
         let NEXT_TERM_ID = 1;
         filePaths.forEach(localpath => {
             let artifactFinalId = artifactId;
-            if(artifactId = 'archetype') {
+            if(artifactId === 'archetype') {
                 if (localpath.includes('archetype-example')) {
                     artifactFinalId = 'archetype-example';
                 }
@@ -70,20 +70,23 @@ export class DependencyFetcher {
             const filePath = vscode.Uri.file(localpath).fsPath;
             //const filePathPom = vscode.Uri.file(context.asAbsolutePath(path.join('resources','jars',"archetype", 'pom.xml'))).fsPath;
             const command = `mvn install:install-file \ -Dfile="${filePath}" \ -DgroupId="${groupId}" \ -DartifactId="${artifactFinalId}" \ -Dversion="${version}" \ -Dpackaging=jar`;
-            terminal.sendText(command);
-            
-            
-
+            console.log(artifactId);
             if(artifactId==="core") {
                        
-                this.updateUserSettings(filePath);
+                this.updateUserSettings(localpath);
             }
+            
+            
+            terminal.sendText(command);
+            
+
+           
         });
 		 
      }
 
-     updateUserSettings (ppath: string)  {
-          vscode.workspace
+     async updateUserSettings (ppath: string)  {
+          await vscode.workspace
             .getConfiguration()
             .update("vdm-vscode.server.classPathAdditions", [vscode.Uri.file(ppath).fsPath], vscode.ConfigurationTarget.Global);
       };

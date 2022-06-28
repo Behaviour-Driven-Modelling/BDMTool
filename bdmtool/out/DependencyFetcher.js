@@ -41,7 +41,7 @@ class DependencyFetcher {
         let NEXT_TERM_ID = 1;
         filePaths.forEach(localpath => {
             let artifactFinalId = artifactId;
-            if (artifactId = 'archetype') {
+            if (artifactId === 'archetype') {
                 if (localpath.includes('archetype-example')) {
                     artifactFinalId = 'archetype-example';
                 }
@@ -55,10 +55,11 @@ class DependencyFetcher {
             const filePath = vscode.Uri.file(localpath).fsPath;
             //const filePathPom = vscode.Uri.file(context.asAbsolutePath(path.join('resources','jars',"archetype", 'pom.xml'))).fsPath;
             const command = `mvn install:install-file \ -Dfile="${filePath}" \ -DgroupId="${groupId}" \ -DartifactId="${artifactFinalId}" \ -Dversion="${version}" \ -Dpackaging=jar`;
-            terminal.sendText(command);
+            console.log(artifactId);
             if (artifactId === "core") {
                 this.updateUserSettings(localpath);
             }
+            terminal.sendText(command);
         });
     }
     async updateUserSettings(ppath) {
@@ -74,7 +75,7 @@ class DependencyFetcher {
             return version[0];
         }
         else {
-            return "1.1.0";
+            return "1.2.0";
         }
     }
 }
