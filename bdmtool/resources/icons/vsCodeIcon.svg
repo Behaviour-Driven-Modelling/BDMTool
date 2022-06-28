@@ -7,9 +7,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="12.5478mm"
-   height="7.3183937mm"
-   viewBox="0 0 12.5478 7.3183937"
+   width="12.763535mm"
+   height="7.5951514mm"
+   viewBox="0 0 12.763535 7.5951514"
    version="1.1"
    id="svg8"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="11.2"
-     inkscape:cx="31.328551"
-     inkscape:cy="25.418245"
+     inkscape:zoom="7.919596"
+     inkscape:cx="9.7182672"
+     inkscape:cy="25.710127"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -55,51 +55,28 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-30.105065,-141.14593)">
-    <g
-       id="g858"
-       transform="translate(-8.1264881,-0.82682292)">
-      <ellipse
-         style="opacity:0.975292;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:1.6, 0.8;stroke-dashoffset:2;stroke-opacity:1"
-         id="path845"
-         cx="-51.679249"
-         cy="-143.79517"
-         rx="5.2199574"
-         ry="2.5981252"
-         transform="rotate(-176.81436)" />
-      <text
-         xml:space="preserve"
-         style="font-size:10.5833px;line-height:1.25;font-family:Centaur;-inkscape-font-specification:Centaur;letter-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
-         x="37.65588"
-         y="149.15886"
-         id="text835"><tspan
-           sodipodi:role="line"
-           id="tspan833"
-           x="37.65588"
-           y="149.15886"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Bauhaus 93';-inkscape-font-specification:'Bauhaus 93, ';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-opacity:1">B</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:5.03045px;line-height:1.25;font-family:Centaur;-inkscape-font-specification:Centaur;letter-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.125762;stroke-opacity:1"
-         x="43.474014"
-         y="149.16185"
-         id="text839"><tspan
-           sodipodi:role="line"
-           id="tspan837"
-           x="43.474014"
-           y="149.16185"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Bauhaus 93';-inkscape-font-specification:'Bauhaus 93, ';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.125762;stroke-opacity:1">D</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:5.03045px;line-height:1.25;font-family:Centaur;-inkscape-font-specification:Centaur;letter-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.125762;stroke-opacity:1"
-         x="46.899422"
-         y="149.16185"
-         id="text849"><tspan
-           sodipodi:role="line"
-           id="tspan847"
-           x="46.899422"
-           y="149.16185"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Bauhaus 93';-inkscape-font-specification:'Bauhaus 93, ';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.125762;stroke-opacity:1">M</tspan></text>
-    </g>
+     transform="translate(-29.987357,-141.02822)">
+    <text
+       xml:space="preserve"
+       style="font-size:10.5833px;line-height:1.25;font-family:Centaur;-inkscape-font-specification:Centaur;letter-spacing:0px;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       x="29.529392"
+       y="148.33203"
+       id="text835"><tspan
+         sodipodi:role="line"
+         id="tspan833"
+         x="29.529392"
+         y="148.33203"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Bauhaus 93';-inkscape-font-specification:'Bauhaus 93, ';fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">B</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10.5833px;line-height:1.25;font-family:Centaur;-inkscape-font-specification:Centaur;letter-spacing:0px;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       x="35.033672"
+       y="148.33203"
+       id="text859"><tspan
+         sodipodi:role="line"
+         id="tspan857"
+         x="35.033672"
+         y="148.33203"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Bauhaus 93';-inkscape-font-specification:'Bauhaus 93, ';fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">D</tspan></text>
   </g>
 </svg>

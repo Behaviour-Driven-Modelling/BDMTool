@@ -4,6 +4,7 @@
 import * as vscode from 'vscode';
 import { BDMTestProvider } from './BDMTestProvider';
 import { DependencyFetcher } from './DependencyFetcher';
+import { getWebviewContent } from './HtmlReportProvider';
 import { TerminalManager } from './TerminalManager';
 import { UserInputManager } from './UserInputManager';
 
@@ -17,38 +18,96 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
     ? vscode.workspace.workspaceFolders[0].uri.fsPath
     : undefined;
-	const localBDMTestProvider = new BDMTestProvider(rootPath);
+	const localBDMTestProviderSpecification = new BDMTestProvider(true, rootPath,);
+	const localBDMTestProviderImplementation = new BDMTestProvider(false, rootPath);
+
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposableInstall = vscode.commands.registerCommand('bdm.createProject', async () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
+		let dependencyFetcherVDMJ = new DependencyFetcher("resources","nickbattle","vdmj",false,false);
+		await dependencyFetcherVDMJ.downloadAndInstall("vdmj");
+
 		vscode.window.showInformationMessage("BDMTool is installing dependencies...");
-		let dependencyFetcherArchetype = new DependencyFetcher("resources","mactanex","BDMArchetype",false,false);
+		let dependencyFetcherArchetype = new DependencyFetcher("resources","Behaviour-Driven-Modelling","BDMArchetype",false,false);
 		await dependencyFetcherArchetype.downloadAndInstall("archetype");
 
-		let dependencyFetcherCore = new DependencyFetcher("resources","mactanex","BDMCore",false,false);
+		let dependencyFetcherCore = new DependencyFetcher("resources","Behaviour-Driven-Modelling","BDMCore",false,false);
 		await dependencyFetcherCore.downloadAndInstall("core");
-		vscode.window.showInformationMessage("Dependencies installed successfully");
+		//vscode.window.showInformationMessage("Dependencies installed successfully");
 
-		let userInputManager = new UserInputManager();
-		await userInputManager.createBDMProjectUI();
+		let userInputManager = new UserInputManager(rootPath);
+		await userInputManager.createBDMProjectUI(false);
+
+	});
+	let disposableInstallExample = vscode.commands.registerCommand('bdm.createProjectExample', async () => {
+		// The code you place here will be executed every time your command is executed
+		// Display a message box to the user
+		let dependencyFetcherVDMJ = new DependencyFetcher("resources","nickbattle","vdmj",false,false);
+		await dependencyFetcherVDMJ.downloadAndInstall("vdmj");
+
+		vscode.window.showInformationMessage("BDMTool is installing dependencies...");
+		let dependencyFetcherArchetype = new DependencyFetcher("resources","Behaviour-Driven-Modelling","BDMArchetype",false,false);
+		await dependencyFetcherArchetype.downloadAndInstall("archetype");
+
+		let dependencyFetcherCore = new DependencyFetcher("resources","Behaviour-Driven-Modelling","BDMCore",false,false);
+		await dependencyFetcherCore.downloadAndInstall("core");
+		//vscode.window.showInformationMessage("Dependencies installed successfully");
+
+		let userInputManager = new UserInputManager(rootPath);
+		await userInputManager.createBDMProjectUI(true);
 
 	});
 	let disposableTest = vscode.commands.registerCommand('bdm.test', async () => {
-		let terminalManager = new TerminalManager();
-		terminalManager.runTests();
-		localBDMTestProvider.refresh();
+		let terminalManager = new TerminalManager(rootPath);
+		
+		terminalManager.runTests(localBDMTestProviderSpecification,true);
+		terminalManager.runTests(localBDMTestProviderImplementation,false);
 	});
 
+	let disposableTestSpecification = vscode.commands.registerCommand('bdm.testSpecification', async () => {
+		let terminalManager = new TerminalManager(rootPath);
+		
+		terminalManager.runTests(localBDMTestProviderSpecification,true);
+	});
+
+	let disposableTestImplementation = vscode.commands.registerCommand('bdm.testImplementation', async () => {
+		let terminalManager = new TerminalManager(rootPath);
+		
+		terminalManager.runTests(localBDMTestProviderImplementation,false);
+	});
+
+	let disposableOpenReportSpecification = vscode.commands.registerCommand("bdm.htmlreport.openSpecification", async () => {
+		const panel = vscode.window.createWebviewPanel("SpecificationReport","Specification Report",vscode.ViewColumn.One,{});
+		panel.webview.options = {enableScripts: true};
+		panel.webview.html = getWebviewContent("reportSpecification.html",rootPath);
+	});
+
+	let disposableOpenReportImplementation = vscode.commands.registerCommand("bdm.htmlreport.openImplementation", async () => {
+		const panel = vscode.window.createWebviewPanel("ImplementationReport","Implementation Report",vscode.ViewColumn.One,{});
+		panel.webview.options = {enableScripts: true};
+		panel.webview.html = getWebviewContent("reportImplementation.html",rootPath);
+	});
+
+
+	context.subscriptions.push(disposableOpenReportImplementation);
+	context.subscriptions.push(disposableOpenReportSpecification);
+	context.subscriptions.push(disposableInstallExample);
 	context.subscriptions.push(disposableInstall);
 	context.subscriptions.push(disposableTest);
+	context.subscriptions.push(disposableTestSpecification);
+	context.subscriptions.push(disposableTestImplementation);
 	
 	vscode.window.registerTreeDataProvider(
-		'BDMTestView',
-		localBDMTestProvider
+		'BDMTestViewSpecification',
+		localBDMTestProviderSpecification
 	  );
+	vscode.window.registerTreeDataProvider(
+		'BDMTestViewImplementation',
+		localBDMTestProviderImplementation
+	);
 }
 
 // this method is called when your extension is deactivated
