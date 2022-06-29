@@ -8,7 +8,7 @@ This is a short walkthrough of how to use the BDM-VSCode extension:
 
     1. Download the BDMTool-latest.vsix file from releases.
     2. Install the extension in Visual Studio Code the extension sidepanel the options button: install from VSIX... 
-    3. Open a new workspace.
+    3. Open a folder, where you want your BDM project to be located in a new workspace.
     4. Open the command pallet with the command `ctrl+shift+p` or right click the explorer panel.
     5. Select `Create new BDM example project`.
      1. Input Group ID and Artifact ID.
