@@ -39,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
 		//vscode.window.showInformationMessage("Dependencies installed successfully");
 
 		let userInputManager = new UserInputManager(rootPath);
-		await userInputManager.createBDMProjectUI(false);
+		await userInputManager.createBDMProjectUI(false, dependencyFetcherArchetype.archetypeVersion);
 
 	});
 	let disposableInstallExample = vscode.commands.registerCommand('bdm.createProjectExample', async () => {
@@ -57,7 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 		//vscode.window.showInformationMessage("Dependencies installed successfully");
 
 		let userInputManager = new UserInputManager(rootPath);
-		await userInputManager.createBDMProjectUI(true);
+		await userInputManager.createBDMProjectUI(true, dependencyFetcherArchetype.archetypeExampleVersion);
 
 	});
 	let disposableTest = vscode.commands.registerCommand('bdm.test', async () => {

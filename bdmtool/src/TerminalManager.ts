@@ -6,14 +6,13 @@ export class TerminalManager {
     constructor(private workspaceRoot?: string) {}
     nextTerminalId: number = 1;
 
-    async createBDMProjectTerminal(groupId: string, projectId: string, example: boolean) {
+    async createBDMProjectTerminal(groupId: string, projectId: string, example: boolean, archetypeVersion: string) {
         const terminal = vscode.window.createTerminal(`BDM Terminal #${this.nextTerminalId++}`);
         let archetypeArtifactId = 'archetype';
         if (example) {
             archetypeArtifactId = 'archetype-example';
         }
-        console.log(archetypeArtifactId);
-        const command = `mvn org.apache.maven.plugins:maven-archetype-plugin:3.1.2:generate -DgroupId="${groupId}" -DartifactId="${projectId}"  -DarchetypeArtifactId="${archetypeArtifactId}" -DarchetypeGroupId="com.bdm" -DarchetypeVersion="1.2.0" -DinteractiveMode=false`;
+        const command = `mvn org.apache.maven.plugins:maven-archetype-plugin:3.1.2:generate -DgroupId="${groupId}" -DartifactId="${projectId}"  -DarchetypeArtifactId="${archetypeArtifactId}" -DarchetypeGroupId="com.bdm" -DarchetypeVersion="${archetypeVersion}" -DinteractiveMode=false`;
         terminal.sendText(command);
         terminal.sendText("exit 0");
         terminal.show();

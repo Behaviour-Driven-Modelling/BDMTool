@@ -6,6 +6,8 @@ const vscode = require("vscode");
 class DependencyFetcher {
     constructor(resourcesDirectory, user, repo, leaveZipped, disableLogging) {
         this.pathBDMCore = "";
+        this.archetypeVersion = "1.2.1";
+        this.archetypeExampleVersion = "1.2.0";
         this.resourcesDirectory = resourcesDirectory;
         this.user = user;
         this.repo = repo;
@@ -41,9 +43,14 @@ class DependencyFetcher {
         let NEXT_TERM_ID = 1;
         filePaths.forEach(localpath => {
             let artifactFinalId = artifactId;
+            const version = this.extractVersion(localpath);
             if (artifactId === 'archetype') {
                 if (localpath.includes('archetype-example')) {
                     artifactFinalId = 'archetype-example';
+                    this.archetypeExampleVersion = version;
+                }
+                else {
+                    this.archetypeVersion = version;
                 }
             }
             let groupId = "com.bdm";
@@ -51,11 +58,9 @@ class DependencyFetcher {
                 groupId = "com.fujitsu";
             }
             const terminal = vscode.window.createTerminal(`BDM Terminal #${NEXT_TERM_ID++}`);
-            const version = this.extractVersion(localpath);
             const filePath = vscode.Uri.file(localpath).fsPath;
             //const filePathPom = vscode.Uri.file(context.asAbsolutePath(path.join('resources','jars',"archetype", 'pom.xml'))).fsPath;
             const command = `mvn install:install-file \ -Dfile="${filePath}" \ -DgroupId="${groupId}" \ -DartifactId="${artifactFinalId}" \ -Dversion="${version}" \ -Dpackaging=jar`;
-            console.log(artifactId);
             if (artifactId === "core") {
                 this.updateUserSettings(localpath);
             }
@@ -76,6 +81,14 @@ class DependencyFetcher {
         }
         else {
             return "1.2.0";
+        }
+    }
+    getArchetypeVersion(example) {
+        if (example) {
+            return this.archetypeExampleVersion;
+        }
+        else {
+            return this.archetypeVersion;
         }
     }
 }

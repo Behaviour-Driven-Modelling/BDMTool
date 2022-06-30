@@ -20,7 +20,6 @@ export class BDMTestProvider implements vscode.TreeDataProvider<BDMTestItem> {
   }
 
   getChildren(element?: BDMTestItem): Thenable<BDMTestItem[]> {
-    console.log(element);
     if (!this.workspaceRoot) {
       vscode.window.showInformationMessage('No tests in empty workspace');
       return Promise.resolve([]);
@@ -34,7 +33,6 @@ export class BDMTestProvider implements vscode.TreeDataProvider<BDMTestItem> {
     if(fs.existsSync(packageJsonPath)) {
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
       if(element?.label === "scenario") {
-        console.log(element.label);
         return Promise.resolve(
           this.getSteps(packageJson,element.id)
         );
@@ -63,14 +61,12 @@ export class BDMTestProvider implements vscode.TreeDataProvider<BDMTestItem> {
   }
 
   private getSteps(parentObject: [], id: string) {
-    console.log(id);
     let steps: BDMTestItem [] = [];
     const toBDMItem = (moduleName: string, version: string, status: string, id: string, name: string, keyword: string): BDMTestItem => {
         return new BDMTestItem(status, moduleName, version, vscode.TreeItemCollapsibleState.None,id,name,keyword);
     };
     parentObject.forEach((feature: any) => {
         feature.elements.forEach((scenario: any) => {
-          console.log(scenario.id);
             if(scenario.id === id) {
               scenario.steps.forEach((step: any) => {
                  steps.push(toBDMItem(step.keyword, step.name,step.result.status,step.id,step.name,step.keyword ));
@@ -78,7 +74,6 @@ export class BDMTestProvider implements vscode.TreeDataProvider<BDMTestItem> {
             }
         });
     });
-    console.log(steps);
     return steps;
   }
   private getParentItems(parentObject: BDMTestItem[]) {

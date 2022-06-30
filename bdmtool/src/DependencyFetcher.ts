@@ -8,6 +8,9 @@ export class DependencyFetcher {
     leaveZipped: boolean;
     disableLogging: boolean;
     pathBDMCore: string = "";
+
+    archetypeVersion: string = "1.2.1";
+    archetypeExampleVersion: string = "1.2.0";
     constructor(resourcesDirectory: string, user: string, repo: string, leaveZipped: boolean, disableLogging: boolean) {
         this.resourcesDirectory = resourcesDirectory;
         this.user = user;
@@ -56,21 +59,26 @@ export class DependencyFetcher {
         let NEXT_TERM_ID = 1;
         filePaths.forEach(localpath => {
             let artifactFinalId = artifactId;
+            const version = this.extractVersion(localpath);
             if(artifactId === 'archetype') {
+
                 if (localpath.includes('archetype-example')) {
                     artifactFinalId = 'archetype-example';
+                    this.archetypeExampleVersion = version;
+                } else {
+                    this.archetypeVersion = version;
                 }
             }
             let groupId = "com.bdm";
             if (artifactId === "vdmj") {
                 groupId = "com.fujitsu";
             }
+            
             const terminal = vscode.window.createTerminal(`BDM Terminal #${NEXT_TERM_ID++}`);
-            const version = this.extractVersion(localpath);
+            
             const filePath = vscode.Uri.file(localpath).fsPath;
             //const filePathPom = vscode.Uri.file(context.asAbsolutePath(path.join('resources','jars',"archetype", 'pom.xml'))).fsPath;
             const command = `mvn install:install-file \ -Dfile="${filePath}" \ -DgroupId="${groupId}" \ -DartifactId="${artifactFinalId}" \ -Dversion="${version}" \ -Dpackaging=jar`;
-            console.log(artifactId);
             if(artifactId==="core") {
                        
                 this.updateUserSettings(localpath);
@@ -102,6 +110,14 @@ export class DependencyFetcher {
          
      }
 
+     getArchetypeVersion(example: boolean){
+        if (example) {
+            return this.archetypeExampleVersion;
+        } else 
+        {
+            return this.archetypeVersion;
+        }
+     }
  
 
 }

@@ -34,7 +34,7 @@ function activate(context) {
         await dependencyFetcherCore.downloadAndInstall("core");
         //vscode.window.showInformationMessage("Dependencies installed successfully");
         let userInputManager = new UserInputManager_1.UserInputManager(rootPath);
-        await userInputManager.createBDMProjectUI(false);
+        await userInputManager.createBDMProjectUI(false, dependencyFetcherArchetype.archetypeVersion);
     });
     let disposableInstallExample = vscode.commands.registerCommand('bdm.createProjectExample', async () => {
         // The code you place here will be executed every time your command is executed
@@ -48,7 +48,7 @@ function activate(context) {
         await dependencyFetcherCore.downloadAndInstall("core");
         //vscode.window.showInformationMessage("Dependencies installed successfully");
         let userInputManager = new UserInputManager_1.UserInputManager(rootPath);
-        await userInputManager.createBDMProjectUI(true);
+        await userInputManager.createBDMProjectUI(true, dependencyFetcherArchetype.archetypeExampleVersion);
     });
     let disposableTest = vscode.commands.registerCommand('bdm.test', async () => {
         let terminalManager = new TerminalManager_1.TerminalManager(rootPath);
